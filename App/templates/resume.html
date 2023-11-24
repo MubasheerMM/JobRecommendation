@@ -1,0 +1,1571 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job</title>
+    <link rel="stylesheet" href="{% static 'css/view.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body id="style-2" style="overflow-y: hidden;">
+    <div class="container">
+
+        <div class="message">
+            <div class="wrap-msg" style="position: relative;height: 100%;">
+            <div class="top-msg">
+                <div class="profile-chat">
+                    <img src="{{userProfile.image.url}}" alt="">
+                    <div>
+                        <h3>{{userProfile.user.username}}</h3>
+                        <p>Avg. response time : {{userProfile.response_time}}hr</p>
+                    </div>
+                </div>
+                <h5 onclick="closeMsg()" style="cursor: pointer;"><i class="fa-solid fa-xmark"></i></h5>
+            </div>
+
+            <div class="messages">
+                
+            
+            {% for message in messages %}
+            {% if request.user.username == message.from_user %}
+            <div class="right-chat">
+                <h4>{{message.message}}</h4>
+            </div> 
+            {% else %}  
+            
+            <div class="left-chat">
+                <h4>{{message.message}}</h4>
+            </div>
+            {% endif %}
+            
+            {% endfor %}
+
+            </div>
+
+            <input type="hidden" value = "{{userProfile.user.username}}" class = "to_user">
+            <input type="hidden" value = "{{request.user.username}}" class = "from_user">
+
+            <div class="msg-options">
+                <input type="text" placeholder="Type your message here" class="text-msg">
+                <button onclick="sendMsg()" style="cursor: pointer;"><ion-icon name="send" ></ion-icon></button>
+            </div>
+
+        </div>
+
+        </div>
+
+        <div class="login-wrapper">
+            <form class="box" enctype="multipart/form-data" method="post">
+                <h5 onclick="closeLogin()"><ion-icon name="close-outline"></ion-icon></h5>
+                <h2>Login</h2>
+                <p>Login in to your account now</p>
+                <div class="field-inp">
+                    <h4>Email</h4>
+                    <input type="email" name="email" id="" placeholder="Email" required class="email">
+                </div>
+                <div class="field-inp">
+                    <h4>Password</h4>
+                    <input type="password" name="email" id="" placeholder="Password" required class="password">
+
+                </div>
+                <div class="fields">
+                    <a>Dont have an account?</a>
+                    <a>Forgot password</a>
+                </div>
+                <p style="display: none;justify-content: center;align-items: center;width: 100%;margin-top: -5px;opacity: 1;margin-bottom: 10px;width: 80%;text-align: center;line-height: 32px;margin-bottom: 20px;" class="error">Invalid login credentials. Please check if you spelled your email and password correctly</p>
+                <button type="button" onclick="sendData()">Login</button>
+            </form>
+        </div>
+        {% if request.user.is_authenticated %}
+        <div class="delete">
+            <h3>Are you sure you want to delete this account?</h3>
+            <div class="delete-buttons">
+
+                <a href="{% url 'deleteUser' pk=request.user.pk %}" style="text-decoration: none;"><button><ion-icon name="checkmark-outline"></ion-icon> Yes</button></a>
+                <button onclick="closeDelete()"><ion-icon name="close-outline"></ion-icon> No</button>
+            </div>
+        </div>
+        {% endif %}
+      
+        <form class="signup-wrapper sedit" enctype="multipart/form-data" method="post" action="{% url 'editAccount' %}">
+            {% csrf_token %}
+            <div class="box box1" >
+                <h5 onclick="closeSignup()" class="close"><ion-icon name="close-outline"></ion-icon></h5>
+                <h2>Edit your account</h2>
+                <p>Make changes to your account</p>
+                
+
+                <input type="hidden" name="" class="check inps" value="">
+                    <div class="group">
+                        <div class="field-inp">
+                            <h4>First name</h4>
+                            <input type="text" name="firstname" id="" placeholder="Firstname" required class="inp" oninput = "check()" value="{{request.user.first_name}}">
+                        </div>
+                        <div class="field-inp">
+                            <h4>Last name</h4>
+                            <input type="text" name="lastname" id="" placeholder="Lastname" required class="inp" oninput = "check()" value="{{request.user.last_name}}">
+                        </div>
+                        <!-- <div class="field-inp">
+                            <h4>User name</h4>
+                            <input type="text" name="username" id="" placeholder="Username" required class="inp username" oninput = "check()" value="{{req}}">
+                            <p class="error3" style="opacity: 1;display: none;font-size: 13px;color: rgb(46, 46, 46);position: absolute;padding-top: 8px;">Username already exists</p>
+                        </div> -->
+                    </div>
+                    <div class="field-inp">
+                        <h4>Email</h4>
+                        <input type="email" name="email" id="" placeholder="Email" required class="inp email1" oninput = "check()" value="{{request.user.email}}">
+                    </div>
+                    <div class="field-inp">
+                        <h4>Password</h4>
+                        <input type="password" name="password" id="" placeholder="Password" >
+
+                    </div>
+                    
+
+                
+                    
+                    <!-- <button type="button">Create a new account <ion-icon name="arrow-forward-outline" style="transform: rotate(-45deg);font-size: 17px;"></ion-icon></button> -->
+                    <button type="button" onclick="showNext()" class="next" >Next <ion-icon name="arrow-forward-outline" style="font-size: 17px;"></ion-icon></button>
+
+               
+                </div>
+
+            <div class="box box2 bedit" enctype="multipart/form-data" method="post">
+                <h5 onclick="closeSignup()" class="close1"><ion-icon name="close-outline"></ion-icon></h5>
+                <h2>Edit your account</h2>
+                <p>Make changes to your account</p>
+                
+
+                    <div class="choose">
+                        <img src="{{profile.image.url}}" alt="" class="profile-pic" >
+                        <div>
+                            <p>Choose Image <input type="file" name="image" onchange="setProfilePic(this)"></p>
+                            <!-- <p>No file chosen</p> -->
+                        </div>
+                    </div>
+                    
+                    <div class="group grps">
+                        <div class="field-inp">
+                            <h4>Country</h4>
+                            <select id="country" name="country" class="location inp1" oninput="check2()">
+                                <option value="">Select country</option>
+                                <option value="Afghanistan">Afghanistan</option>
+                                <option value="Åland Islands">Åland Islands</option>
+                                <option value="Albania">Albania</option>
+                                <option value="Algeria">Algeria</option>
+                                <option value="American Samoa">American Samoa</option>
+                                <option value="Andorra">Andorra</option>
+                                <option value="Angola">Angola</option>
+                                <option value="Anguilla">Anguilla</option>
+                                <option value="Antarctica">Antarctica</option>
+                                <option value="Antigua and Barbuda">Antigua and Barbuda</option>
+                                <option value="Argentina">Argentina</option>
+                                <option value="Armenia">Armenia</option>
+                                <option value="Aruba">Aruba</option>
+                                <option value="Australia">Australia</option>
+                                <option value="Austria">Austria</option>
+                                <option value="Azerbaijan">Azerbaijan</option>
+                                <option value="Bahamas">Bahamas</option>
+                                <option value="Bahrain">Bahrain</option>
+                                <option value="Bangladesh">Bangladesh</option>
+                                <option value="Barbados">Barbados</option>
+                                <option value="Belarus">Belarus</option>
+                                <option value="Belgium">Belgium</option>
+                                <option value="Belize">Belize</option>
+                                <option value="Benin">Benin</option>
+                                <option value="Bermuda">Bermuda</option>
+                                <option value="Bhutan">Bhutan</option>
+                                <option value="Bolivia">Bolivia</option>
+                                <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+                                <option value="Botswana">Botswana</option>
+                                <option value="Bouvet Island">Bouvet Island</option>
+                                <option value="Brazil">Brazil</option>
+                                <option value="British Indian Ocean Territory">British Indian Ocean Territory</option>
+                                <option value="Brunei Darussalam">Brunei Darussalam</option>
+                                <option value="Bulgaria">Bulgaria</option>
+                                <option value="Burkina Faso">Burkina Faso</option>
+                                <option value="Burundi">Burundi</option>
+                                <option value="Cambodia">Cambodia</option>
+                                <option value="Cameroon">Cameroon</option>
+                                <option value="Canada">Canada</option>
+                                <option value="Cape Verde">Cape Verde</option>
+                                <option value="Cayman Islands">Cayman Islands</option>
+                                <option value="Central African Republic">Central African Republic</option>
+                                <option value="Chad">Chad</option>
+                                <option value="Chile">Chile</option>
+                                <option value="China">China</option>
+                                <option value="Christmas Island">Christmas Island</option>
+                                <option value="Cocos (Keeling) Islands">Cocos (Keeling) Islands</option>
+                                <option value="Colombia">Colombia</option>
+                                <option value="Comoros">Comoros</option>
+                                <option value="Congo">Congo</option>
+                                <option value="Congo, The Democratic Republic of The">Congo, The Democratic Republic of The</option>
+                                <option value="Cook Islands">Cook Islands</option>
+                                <option value="Costa Rica">Costa Rica</option>
+                                <option value="Cote D'ivoire">Cote D'ivoire</option>
+                                <option value="Croatia">Croatia</option>
+                                <option value="Cuba">Cuba</option>
+                                <option value="Cyprus">Cyprus</option>
+                                <option value="Czech Republic">Czech Republic</option>
+                                <option value="Denmark">Denmark</option>
+                                <option value="Djibouti">Djibouti</option>
+                                <option value="Dominica">Dominica</option>
+                                <option value="Dominican Republic">Dominican Republic</option>
+                                <option value="Ecuador">Ecuador</option>
+                                <option value="Egypt">Egypt</option>
+                                <option value="El Salvador">El Salvador</option>
+                                <option value="Equatorial Guinea">Equatorial Guinea</option>
+                                <option value="Eritrea">Eritrea</option>
+                                <option value="Estonia">Estonia</option>
+                                <option value="Ethiopia">Ethiopia</option>
+                                <option value="Falkland Islands (Malvinas)">Falkland Islands (Malvinas)</option>
+                                <option value="Faroe Islands">Faroe Islands</option>
+                                <option value="Fiji">Fiji</option>
+                                <option value="Finland">Finland</option>
+                                <option value="France">France</option>
+                                <option value="French Guiana">French Guiana</option>
+                                <option value="French Polynesia">French Polynesia</option>
+                                <option value="French Southern Territories">French Southern Territories</option>
+                                <option value="Gabon">Gabon</option>
+                                <option value="Gambia">Gambia</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Germany">Germany</option>
+                                <option value="Ghana">Ghana</option>
+                                <option value="Gibraltar">Gibraltar</option>
+                                <option value="Greece">Greece</option>
+                                <option value="Greenland">Greenland</option>
+                                <option value="Grenada">Grenada</option>
+                                <option value="Guadeloupe">Guadeloupe</option>
+                                <option value="Guam">Guam</option>
+                                <option value="Guatemala">Guatemala</option>
+                                <option value="Guernsey">Guernsey</option>
+                                <option value="Guinea">Guinea</option>
+                                <option value="Guinea-bissau">Guinea-bissau</option>
+                                <option value="Guyana">Guyana</option>
+                                <option value="Haiti">Haiti</option>
+                                <option value="Heard Island and Mcdonald Islands">Heard Island and Mcdonald Islands</option>
+                                <option value="Holy See (Vatican City State)">Holy See (Vatican City State)</option>
+                                <option value="Honduras">Honduras</option>
+                                <option value="Hong Kong">Hong Kong</option>
+                                <option value="Hungary">Hungary</option>
+                                <option value="Iceland">Iceland</option>
+                                <option value="India">India</option>
+                                <option value="Indonesia">Indonesia</option>
+                                <option value="Iran, Islamic Republic of">Iran, Islamic Republic of</option>
+                                <option value="Iraq">Iraq</option>
+                                <option value="Ireland">Ireland</option>
+                                <option value="Isle of Man">Isle of Man</option>
+                                <option value="Israel">Israel</option>
+                                <option value="Italy">Italy</option>
+                                <option value="Jamaica">Jamaica</option>
+                                <option value="Japan">Japan</option>
+                                <option value="Jersey">Jersey</option>
+                                <option value="Jordan">Jordan</option>
+                                <option value="Kazakhstan">Kazakhstan</option>
+                                <option value="Kenya">Kenya</option>
+                                <option value="Kiribati">Kiribati</option>
+                                <option value="Korea, Democratic People's Republic of">Korea, Democratic People's Republic of</option>
+                                <option value="Korea, Republic of">Korea, Republic of</option>
+                                <option value="Kuwait">Kuwait</option>
+                                <option value="Kyrgyzstan">Kyrgyzstan</option>
+                                <option value="Lao People's Democratic Republic">Lao People's Democratic Republic</option>
+                                <option value="Latvia">Latvia</option>
+                                <option value="Lebanon">Lebanon</option>
+                                <option value="Lesotho">Lesotho</option>
+                                <option value="Liberia">Liberia</option>
+                                <option value="Libyan Arab Jamahiriya">Libyan Arab Jamahiriya</option>
+                                <option value="Liechtenstein">Liechtenstein</option>
+                                <option value="Lithuania">Lithuania</option>
+                                <option value="Luxembourg">Luxembourg</option>
+                                <option value="Macao">Macao</option>
+                                <option value="Macedonia, The Former Yugoslav Republic of">Macedonia, The Former Yugoslav Republic of</option>
+                                <option value="Madagascar">Madagascar</option>
+                                <option value="Malawi">Malawi</option>
+                                <option value="Malaysia">Malaysia</option>
+                                <option value="Maldives">Maldives</option>
+                                <option value="Mali">Mali</option>
+                                <option value="Malta">Malta</option>
+                                <option value="Marshall Islands">Marshall Islands</option>
+                                <option value="Martinique">Martinique</option>
+                                <option value="Mauritania">Mauritania</option>
+                                <option value="Mauritius">Mauritius</option>
+                                <option value="Mayotte">Mayotte</option>
+                                <option value="Mexico">Mexico</option>
+                                <option value="Micronesia, Federated States of">Micronesia, Federated States of</option>
+                                <option value="Moldova, Republic of">Moldova, Republic of</option>
+                                <option value="Monaco">Monaco</option>
+                                <option value="Mongolia">Mongolia</option>
+                                <option value="Montenegro">Montenegro</option>
+                                <option value="Montserrat">Montserrat</option>
+                                <option value="Morocco">Morocco</option>
+                                <option value="Mozambique">Mozambique</option>
+                                <option value="Myanmar">Myanmar</option>
+                                <option value="Namibia">Namibia</option>
+                                <option value="Nauru">Nauru</option>
+                                <option value="Nepal">Nepal</option>
+                                <option value="Netherlands">Netherlands</option>
+                                <option value="Netherlands Antilles">Netherlands Antilles</option>
+                                <option value="New Caledonia">New Caledonia</option>
+                                <option value="New Zealand">New Zealand</option>
+                                <option value="Nicaragua">Nicaragua</option>
+                                <option value="Niger">Niger</option>
+                                <option value="Nigeria">Nigeria</option>
+                                <option value="Niue">Niue</option>
+                                <option value="Norfolk Island">Norfolk Island</option>
+                                <option value="Northern Mariana Islands">Northern Mariana Islands</option>
+                                <option value="Norway">Norway</option>
+                                <option value="Oman">Oman</option>
+                                <option value="Pakistan">Pakistan</option>
+                                <option value="Palau">Palau</option>
+                                <option value="Palestinian Territory, Occupied">Palestinian Territory, Occupied</option>
+                                <option value="Panama">Panama</option>
+                                <option value="Papua New Guinea">Papua New Guinea</option>
+                                <option value="Paraguay">Paraguay</option>
+                                <option value="Peru">Peru</option>
+                                <option value="Philippines">Philippines</option>
+                                <option value="Pitcairn">Pitcairn</option>
+                                <option value="Poland">Poland</option>
+                                <option value="Portugal">Portugal</option>
+                                <option value="Puerto Rico">Puerto Rico</option>
+                                <option value="Qatar">Qatar</option>
+                                <option value="Reunion">Reunion</option>
+                                <option value="Romania">Romania</option>
+                                <option value="Russian Federation">Russian Federation</option>
+                                <option value="Rwanda">Rwanda</option>
+                                <option value="Saint Helena">Saint Helena</option>
+                                <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
+                                <option value="Saint Lucia">Saint Lucia</option>
+                                <option value="Saint Pierre and Miquelon">Saint Pierre and Miquelon</option>
+                                <option value="Saint Vincent and The Grenadines">Saint Vincent and The Grenadines</option>
+                                <option value="Samoa">Samoa</option>
+                                <option value="San Marino">San Marino</option>
+                                <option value="Sao Tome and Principe">Sao Tome and Principe</option>
+                                <option value="Saudi Arabia">Saudi Arabia</option>
+                                <option value="Senegal">Senegal</option>
+                                <option value="Serbia">Serbia</option>
+                                <option value="Seychelles">Seychelles</option>
+                                <option value="Sierra Leone">Sierra Leone</option>
+                                <option value="Singapore">Singapore</option>
+                                <option value="Slovakia">Slovakia</option>
+                                <option value="Slovenia">Slovenia</option>
+                                <option value="Solomon Islands">Solomon Islands</option>
+                                <option value="Somalia">Somalia</option>
+                                <option value="South Africa">South Africa</option>
+                                <option value="South Georgia and The South Sandwich Islands">South Georgia and The South Sandwich Islands</option>
+                                <option value="Spain">Spain</option>
+                                <option value="Sri Lanka">Sri Lanka</option>
+                                <option value="Sudan">Sudan</option>
+                                <option value="Suriname">Suriname</option>
+                                <option value="Svalbard and Jan Mayen">Svalbard and Jan Mayen</option>
+                                <option value="Swaziland">Swaziland</option>
+                                <option value="Sweden">Sweden</option>
+                                <option value="Switzerland">Switzerland</option>
+                                <option value="Syrian Arab Republic">Syrian Arab Republic</option>
+                                <option value="Taiwan">Taiwan</option>
+                                <option value="Tajikistan">Tajikistan</option>
+                                <option value="Tanzania, United Republic of">Tanzania, United Republic of</option>
+                                <option value="Thailand">Thailand</option>
+                                <option value="Timor-leste">Timor-leste</option>
+                                <option value="Togo">Togo</option>
+                                <option value="Tokelau">Tokelau</option>
+                                <option value="Tonga">Tonga</option>
+                                <option value="Trinidad and Tobago">Trinidad and Tobago</option>
+                                <option value="Tunisia">Tunisia</option>
+                                <option value="Turkey">Turkey</option>
+                                <option value="Turkmenistan">Turkmenistan</option>
+                                <option value="Turks and Caicos Islands">Turks and Caicos Islands</option>
+                                <option value="Tuvalu">Tuvalu</option>
+                                <option value="Uganda">Uganda</option>
+                                <option value="Ukraine">Ukraine</option>
+                                <option value="United Arab Emirates">United Arab Emirates</option>
+                                <option value="United Kingdom">United Kingdom</option>
+                                <option value="United States">United States</option>
+                                <option value="United States Minor Outlying Islands">United States Minor Outlying Islands</option>
+                                <option value="Uruguay">Uruguay</option>
+                                <option value="Uzbekistan">Uzbekistan</option>
+                                <option value="Vanuatu">Vanuatu</option>
+                                <option value="Venezuela">Venezuela</option>
+                                <option value="Viet Nam">Viet Nam</option>
+                                <option value="Virgin Islands, British">Virgin Islands, British</option>
+                                <option value="Virgin Islands, U.S.">Virgin Islands, U.S.</option>
+                                <option value="Wallis and Futuna">Wallis and Futuna</option>
+                                <option value="Western Sahara">Western Sahara</option>
+                                <option value="Yemen">Yemen</option>
+                                <option value="Zambia">Zambia</option>
+                                <option value="Zimbabwe">Zimbabwe</option>
+                            </select>
+                        </div>
+
+                        <div class="field-inp">
+                            <h4>Phone number</h4>
+                            <input type="text" name="phone" id="" class="inp1" placeholder="Phone number" required oninput="check2()" value="{{profile.phone}}">
+                        </div>
+                        <div class="field-inp">
+                            <h4>Age</h4>
+                            <input type="number" name="age" id="" placeholder="Age" class="inp1" required oninput="check2()" value="{{profile.age}}">
+                        </div>
+                    </div>
+                    <div class="group grps">
+
+                        <div class="field-inp">
+                            <h4>Skills</h4>
+                            
+                            <input type="text" name="skills" id="" value="{{profile.skills}}" placeholder="E.g Css, creative, UX " class="inp1" required oninput="check2()">
+                            
+                        </div>
+
+                        <div class="field-inp">
+                            <h4>Current Job</h4>
+                            
+                            <input type="text" name="job" id=""  value="{{profile.job}}" placeholder="E.g Product manager" class="inp1" required oninput="check2()">
+                            
+                        </div>
+
+                        <div class="field-inp">
+                            <h4>Avg. Response Time</h4>
+                            
+                            <input type="number" name="response" id="" value="{{profile.response_time}}" placeholder="Average Response Time eg. 2hr" class="inp1" required oninput="check2()">
+                            
+                        </div>
+                    </div>
+                <div class="page-buttons">
+                    <button type="button" onclick="showPrevious()"><ion-icon name="arrow-back-outline" style="transform: rotate(0deg);font-size: 17px;"></ion-icon> Previous</button>
+
+                    <button type="submit" class="finish" style="opacity: 0.5;pointer-events: none;">Finish<ion-icon name="arrow-forward-outline" style="transform: rotate(0deg);font-size: 17px;"></ion-icon></button>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="resume-wrap">
+
+            <div class="resume" style="top: 25px;padding-bottom: 20px;">
+                <img src="{% static 'images/SL-022122-48700-07.jpg' %}" alt="" style="position: absolute;width: 100%;height: 100%;object-fit: cover;opacity: 0.3;z-index: 1;">
+                <div class="prof-wrap" style="display: flex;gap: 45px;justify-content: center;align-items: center;margin-top: 25px;">
+                    <div class="left-profile">
+                        <div style="text-align: right;margin-bottom:20px">
+                            <h3>Email address</h3>
+                            <p style = "margin-top:8px;font-weight:600;opacity: 1;font-size: 14px;">{{email}}</p>
+                            
+                        </div>
+                        <div style="text-align: right;margin-bottom:20px;margin-right: 35px;">
+                            <h3>Phone</h3>
+                            <p style = "margin-top:8px;font-weight:600;opacity: 1;font-size: 14px;">{{phone}}</p>
+                            
+                        </div>
+                        <div style="text-align: right;margin-bottom:20px">
+                            <h3>Gender</h3>
+                            <p style = "margin-top:8px;font-weight:600;opacity: 1;font-size: 14px;">{{gender}}</p>
+                            
+                        </div>
+                    </div>
+                    <div>
+                        <img src="{{image}}" alt="">
+                        <h2>{{firstname}}</h2>
+
+                    </div>
+                    <div class="right-profile">
+                        <div style="text-align: left;margin-bottom:20px">
+                            <h3>Country</h3>
+                            <p style = "margin-top:8px;font-weight:600;opacity: 1;font-size: 14px;">{{country}}</p>
+                        </div>
+                       
+                        
+                        <div style="text-align: left;margin-bottom:20px;margin-left: 25px;">
+                            <h3>Degree</h3>
+                            <p style = "margin-top:8px;font-weight:600;opacity: 1;font-size: 14px;">{{degree}}</p>
+                        </div>
+                        <div style="text-align: left;margin-bottom:20px">
+                            <h3>Passout year</h3>
+                            <p style = "margin-top:8px;font-weight:600;opacity: 1;font-size: 14px;">{{year}}</p>
+                        </div>
+                    </div>
+                </div>
+                <h4 style="margin-top: 25px;">Address</h4>
+                <p style="margin-top: 8px;line-height: 30px;font-weight: 500;font-size: 14px;opacity: 0.8;text-align: center;margin-bottom: 35px;">{{address}}</p>
+
+                <h4 style="margin-top: -10px;">About Me</h4>
+                <p style="margin-top: 8px;line-height: 30px;font-weight: 500;font-size: 14px;opacity: 0.8;text-align: center;margin-bottom: 35px;">{{bio}}</p>
+
+                
+                <h4 style="margin-top: -10px;">My skills</h4>
+                <p style="margin-top: 8px;line-height: 30px;font-weight: 500;font-size: 14px;opacity: 0.8;text-align: center;margin-bottom: 35px;">{{skills_all}}</p>
+
+                <h3></h3>
+
+            </div>
+            <button style="position: absolute;top: 15px;width: 250px;right:25px;padding: 10px;background-color: #07a44b;color: white;font-size: 18px;border: none;outline: none;z-index: 10;border-radius: 5px;" class="download">Download My resume</button>
+
+        </div>
+
+ 
+        <form class="gig-wrapper" enctype="multipart/form-data" method="post" action="{% url 'post' %}">
+            {% csrf_token %}
+            <div class="box box4" >
+                <h5 onclick="closeGig()"><ion-icon name="close-outline"></ion-icon></h5>
+                <h2>Create Gig</h2>
+                <p>Hey {{request.user.username }}, create your gig now</p>
+                
+
+                <input type="hidden" name="" class="check inps" value="">
+                    <div class="field-inp">
+                        <h4>Gig Title</h4>
+                        <input type="text" name="title" id="" placeholder="Title of your gig e.g I will do wordpress website for you with SEO enabled" required class="inp3" oninput = "check3()">
+                    </div>
+
+                    <div class="group">
+                        <div class="field-inp">
+                            <h4>Category</h4>
+                            <select name="category" id="" class="inp3" style="width: 100%;outline: none;">
+                                <option value="">Select category</option>
+                                <option value="Website Development">Website Development</option>
+                                <option value="Graphics and Design">Graphics and Design</option>
+                                <option value="Writing and Translation">Writing and Translation</option>
+                                <option value="Video and Animation">Video and Animation</option>
+                                <option value="Programming and Tech">Programming and Tech</option>
+                                <option value="Business">Business</option>
+                                <option value="Digital Marketing">Digital Marketing</option>
+                            </select>
+                        </div>
+                        <div class="field-inp">
+                            <h4>Your Location</h4>
+                            <select id="country" name="country" class="inp3" oninput="check3()" style="width: 100%;outline:none">
+                                <option value="">Select country</option>
+                                <option value="Afghanistan">Afghanistan</option>
+                                <option value="Åland Islands">Åland Islands</option>
+                                <option value="Albania">Albania</option>
+                                <option value="Algeria">Algeria</option>
+                                <option value="American Samoa">American Samoa</option>
+                                <option value="Andorra">Andorra</option>
+                                <option value="Angola">Angola</option>
+                                <option value="Anguilla">Anguilla</option>
+                                <option value="Antarctica">Antarctica</option>
+                                <option value="Antigua and Barbuda">Antigua and Barbuda</option>
+                                <option value="Argentina">Argentina</option>
+                                <option value="Armenia">Armenia</option>
+                                <option value="Aruba">Aruba</option>
+                                <option value="Australia">Australia</option>
+                                <option value="Austria">Austria</option>
+                                <option value="Azerbaijan">Azerbaijan</option>
+                                <option value="Bahamas">Bahamas</option>
+                                <option value="Bahrain">Bahrain</option>
+                                <option value="Bangladesh">Bangladesh</option>
+                                <option value="Barbados">Barbados</option>
+                                <option value="Belarus">Belarus</option>
+                                <option value="Belgium">Belgium</option>
+                                <option value="Belize">Belize</option>
+                                <option value="Benin">Benin</option>
+                                <option value="Bermuda">Bermuda</option>
+                                <option value="Bhutan">Bhutan</option>
+                                <option value="Bolivia">Bolivia</option>
+                                <option value="Bosnia and Herzegovina">Bosnia and Herzegovina</option>
+                                <option value="Botswana">Botswana</option>
+                                <option value="Bouvet Island">Bouvet Island</option>
+                                <option value="Brazil">Brazil</option>
+                                <option value="British Indian Ocean Territory">British Indian Ocean Territory</option>
+                                <option value="Brunei Darussalam">Brunei Darussalam</option>
+                                <option value="Bulgaria">Bulgaria</option>
+                                <option value="Burkina Faso">Burkina Faso</option>
+                                <option value="Burundi">Burundi</option>
+                                <option value="Cambodia">Cambodia</option>
+                                <option value="Cameroon">Cameroon</option>
+                                <option value="Canada">Canada</option>
+                                <option value="Cape Verde">Cape Verde</option>
+                                <option value="Cayman Islands">Cayman Islands</option>
+                                <option value="Central African Republic">Central African Republic</option>
+                                <option value="Chad">Chad</option>
+                                <option value="Chile">Chile</option>
+                                <option value="China">China</option>
+                                <option value="Christmas Island">Christmas Island</option>
+                                <option value="Cocos (Keeling) Islands">Cocos (Keeling) Islands</option>
+                                <option value="Colombia">Colombia</option>
+                                <option value="Comoros">Comoros</option>
+                                <option value="Congo">Congo</option>
+                                <option value="Congo, The Democratic Republic of The">Congo, The Democratic Republic of The</option>
+                                <option value="Cook Islands">Cook Islands</option>
+                                <option value="Costa Rica">Costa Rica</option>
+                                <option value="Cote D'ivoire">Cote D'ivoire</option>
+                                <option value="Croatia">Croatia</option>
+                                <option value="Cuba">Cuba</option>
+                                <option value="Cyprus">Cyprus</option>
+                                <option value="Czech Republic">Czech Republic</option>
+                                <option value="Denmark">Denmark</option>
+                                <option value="Djibouti">Djibouti</option>
+                                <option value="Dominica">Dominica</option>
+                                <option value="Dominican Republic">Dominican Republic</option>
+                                <option value="Ecuador">Ecuador</option>
+                                <option value="Egypt">Egypt</option>
+                                <option value="El Salvador">El Salvador</option>
+                                <option value="Equatorial Guinea">Equatorial Guinea</option>
+                                <option value="Eritrea">Eritrea</option>
+                                <option value="Estonia">Estonia</option>
+                                <option value="Ethiopia">Ethiopia</option>
+                                <option value="Falkland Islands (Malvinas)">Falkland Islands (Malvinas)</option>
+                                <option value="Faroe Islands">Faroe Islands</option>
+                                <option value="Fiji">Fiji</option>
+                                <option value="Finland">Finland</option>
+                                <option value="France">France</option>
+                                <option value="French Guiana">French Guiana</option>
+                                <option value="French Polynesia">French Polynesia</option>
+                                <option value="French Southern Territories">French Southern Territories</option>
+                                <option value="Gabon">Gabon</option>
+                                <option value="Gambia">Gambia</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Germany">Germany</option>
+                                <option value="Ghana">Ghana</option>
+                                <option value="Gibraltar">Gibraltar</option>
+                                <option value="Greece">Greece</option>
+                                <option value="Greenland">Greenland</option>
+                                <option value="Grenada">Grenada</option>
+                                <option value="Guadeloupe">Guadeloupe</option>
+                                <option value="Guam">Guam</option>
+                                <option value="Guatemala">Guatemala</option>
+                                <option value="Guernsey">Guernsey</option>
+                                <option value="Guinea">Guinea</option>
+                                <option value="Guinea-bissau">Guinea-bissau</option>
+                                <option value="Guyana">Guyana</option>
+                                <option value="Haiti">Haiti</option>
+                                <option value="Heard Island and Mcdonald Islands">Heard Island and Mcdonald Islands</option>
+                                <option value="Holy See (Vatican City State)">Holy See (Vatican City State)</option>
+                                <option value="Honduras">Honduras</option>
+                                <option value="Hong Kong">Hong Kong</option>
+                                <option value="Hungary">Hungary</option>
+                                <option value="Iceland">Iceland</option>
+                                <option value="India">India</option>
+                                <option value="Indonesia">Indonesia</option>
+                                <option value="Iran, Islamic Republic of">Iran, Islamic Republic of</option>
+                                <option value="Iraq">Iraq</option>
+                                <option value="Ireland">Ireland</option>
+                                <option value="Isle of Man">Isle of Man</option>
+                                <option value="Israel">Israel</option>
+                                <option value="Italy">Italy</option>
+                                <option value="Jamaica">Jamaica</option>
+                                <option value="Japan">Japan</option>
+                                <option value="Jersey">Jersey</option>
+                                <option value="Jordan">Jordan</option>
+                                <option value="Kazakhstan">Kazakhstan</option>
+                                <option value="Kenya">Kenya</option>
+                                <option value="Kiribati">Kiribati</option>
+                                <option value="Korea, Democratic People's Republic of">Korea, Democratic People's Republic of</option>
+                                <option value="Korea, Republic of">Korea, Republic of</option>
+                                <option value="Kuwait">Kuwait</option>
+                                <option value="Kyrgyzstan">Kyrgyzstan</option>
+                                <option value="Lao People's Democratic Republic">Lao People's Democratic Republic</option>
+                                <option value="Latvia">Latvia</option>
+                                <option value="Lebanon">Lebanon</option>
+                                <option value="Lesotho">Lesotho</option>
+                                <option value="Liberia">Liberia</option>
+                                <option value="Libyan Arab Jamahiriya">Libyan Arab Jamahiriya</option>
+                                <option value="Liechtenstein">Liechtenstein</option>
+                                <option value="Lithuania">Lithuania</option>
+                                <option value="Luxembourg">Luxembourg</option>
+                                <option value="Macao">Macao</option>
+                                <option value="Macedonia, The Former Yugoslav Republic of">Macedonia, The Former Yugoslav Republic of</option>
+                                <option value="Madagascar">Madagascar</option>
+                                <option value="Malawi">Malawi</option>
+                                <option value="Malaysia">Malaysia</option>
+                                <option value="Maldives">Maldives</option>
+                                <option value="Mali">Mali</option>
+                                <option value="Malta">Malta</option>
+                                <option value="Marshall Islands">Marshall Islands</option>
+                                <option value="Martinique">Martinique</option>
+                                <option value="Mauritania">Mauritania</option>
+                                <option value="Mauritius">Mauritius</option>
+                                <option value="Mayotte">Mayotte</option>
+                                <option value="Mexico">Mexico</option>
+                                <option value="Micronesia, Federated States of">Micronesia, Federated States of</option>
+                                <option value="Moldova, Republic of">Moldova, Republic of</option>
+                                <option value="Monaco">Monaco</option>
+                                <option value="Mongolia">Mongolia</option>
+                                <option value="Montenegro">Montenegro</option>
+                                <option value="Montserrat">Montserrat</option>
+                                <option value="Morocco">Morocco</option>
+                                <option value="Mozambique">Mozambique</option>
+                                <option value="Myanmar">Myanmar</option>
+                                <option value="Namibia">Namibia</option>
+                                <option value="Nauru">Nauru</option>
+                                <option value="Nepal">Nepal</option>
+                                <option value="Netherlands">Netherlands</option>
+                                <option value="Netherlands Antilles">Netherlands Antilles</option>
+                                <option value="New Caledonia">New Caledonia</option>
+                                <option value="New Zealand">New Zealand</option>
+                                <option value="Nicaragua">Nicaragua</option>
+                                <option value="Niger">Niger</option>
+                                <option value="Nigeria">Nigeria</option>
+                                <option value="Niue">Niue</option>
+                                <option value="Norfolk Island">Norfolk Island</option>
+                                <option value="Northern Mariana Islands">Northern Mariana Islands</option>
+                                <option value="Norway">Norway</option>
+                                <option value="Oman">Oman</option>
+                                <option value="Pakistan">Pakistan</option>
+                                <option value="Palau">Palau</option>
+                                <option value="Palestinian Territory, Occupied">Palestinian Territory, Occupied</option>
+                                <option value="Panama">Panama</option>
+                                <option value="Papua New Guinea">Papua New Guinea</option>
+                                <option value="Paraguay">Paraguay</option>
+                                <option value="Peru">Peru</option>
+                                <option value="Philippines">Philippines</option>
+                                <option value="Pitcairn">Pitcairn</option>
+                                <option value="Poland">Poland</option>
+                                <option value="Portugal">Portugal</option>
+                                <option value="Puerto Rico">Puerto Rico</option>
+                                <option value="Qatar">Qatar</option>
+                                <option value="Reunion">Reunion</option>
+                                <option value="Romania">Romania</option>
+                                <option value="Russian Federation">Russian Federation</option>
+                                <option value="Rwanda">Rwanda</option>
+                                <option value="Saint Helena">Saint Helena</option>
+                                <option value="Saint Kitts and Nevis">Saint Kitts and Nevis</option>
+                                <option value="Saint Lucia">Saint Lucia</option>
+                                <option value="Saint Pierre and Miquelon">Saint Pierre and Miquelon</option>
+                                <option value="Saint Vincent and The Grenadines">Saint Vincent and The Grenadines</option>
+                                <option value="Samoa">Samoa</option>
+                                <option value="San Marino">San Marino</option>
+                                <option value="Sao Tome and Principe">Sao Tome and Principe</option>
+                                <option value="Saudi Arabia">Saudi Arabia</option>
+                                <option value="Senegal">Senegal</option>
+                                <option value="Serbia">Serbia</option>
+                                <option value="Seychelles">Seychelles</option>
+                                <option value="Sierra Leone">Sierra Leone</option>
+                                <option value="Singapore">Singapore</option>
+                                <option value="Slovakia">Slovakia</option>
+                                <option value="Slovenia">Slovenia</option>
+                                <option value="Solomon Islands">Solomon Islands</option>
+                                <option value="Somalia">Somalia</option>
+                                <option value="South Africa">South Africa</option>
+                                <option value="South Georgia and The South Sandwich Islands">South Georgia and The South Sandwich Islands</option>
+                                <option value="Spain">Spain</option>
+                                <option value="Sri Lanka">Sri Lanka</option>
+                                <option value="Sudan">Sudan</option>
+                                <option value="Suriname">Suriname</option>
+                                <option value="Svalbard and Jan Mayen">Svalbard and Jan Mayen</option>
+                                <option value="Swaziland">Swaziland</option>
+                                <option value="Sweden">Sweden</option>
+                                <option value="Switzerland">Switzerland</option>
+                                <option value="Syrian Arab Republic">Syrian Arab Republic</option>
+                                <option value="Taiwan">Taiwan</option>
+                                <option value="Tajikistan">Tajikistan</option>
+                                <option value="Tanzania, United Republic of">Tanzania, United Republic of</option>
+                                <option value="Thailand">Thailand</option>
+                                <option value="Timor-leste">Timor-leste</option>
+                                <option value="Togo">Togo</option>
+                                <option value="Tokelau">Tokelau</option>
+                                <option value="Tonga">Tonga</option>
+                                <option value="Trinidad and Tobago">Trinidad and Tobago</option>
+                                <option value="Tunisia">Tunisia</option>
+                                <option value="Turkey">Turkey</option>
+                                <option value="Turkmenistan">Turkmenistan</option>
+                                <option value="Turks and Caicos Islands">Turks and Caicos Islands</option>
+                                <option value="Tuvalu">Tuvalu</option>
+                                <option value="Uganda">Uganda</option>
+                                <option value="Ukraine">Ukraine</option>
+                                <option value="United Arab Emirates">United Arab Emirates</option>
+                                <option value="United Kingdom">United Kingdom</option>
+                                <option value="United States">United States</option>
+                                <option value="United States Minor Outlying Islands">United States Minor Outlying Islands</option>
+                                <option value="Uruguay">Uruguay</option>
+                                <option value="Uzbekistan">Uzbekistan</option>
+                                <option value="Vanuatu">Vanuatu</option>
+                                <option value="Venezuela">Venezuela</option>
+                                <option value="Viet Nam">Viet Nam</option>
+                                <option value="Virgin Islands, British">Virgin Islands, British</option>
+                                <option value="Virgin Islands, U.S.">Virgin Islands, U.S.</option>
+                                <option value="Wallis and Futuna">Wallis and Futuna</option>
+                                <option value="Western Sahara">Western Sahara</option>
+                                <option value="Yemen">Yemen</option>
+                                <option value="Zambia">Zambia</option>
+                                <option value="Zimbabwe">Zimbabwe</option>
+                            </select>
+                        </div>
+                        <div class="field-inp">
+                            <h4>Price</h4>
+                            <input type="number" name="price" id="" placeholder="e.g ₹25,000" required class="inp3" oninput = "check3()" >
+                            <p class="error3" style="opacity: 1;display: none;font-size: 13px;color: rgb(46, 46, 46);position: absolute;padding-top: 8px;">Username already exists</p>
+                        </div>
+                    </div>
+
+                    <div class="field-inp">
+                        <h4>Gig Description</h4>
+                        <textarea type="text" name="description" id="" placeholder="Describe about your gig" required class="inp3" oninput = "check3()" cols="73" ></textarea>
+                    </div>
+
+                    
+                    
+                    
+                
+
+                
+                    
+                    <!-- <button type="button">Create a new account <ion-icon name="arrow-forward-outline" style="transform: rotate(-45deg);font-size: 17px;"></ion-icon></button> -->
+                    <button type="button" onclick="showNext1()" class="next1" style="opacity: 0.5;pointer-events: none;margin-top: -10px;">Next <ion-icon name="arrow-forward-outline" style="font-size: 17px;"></ion-icon></button>
+
+               
+                </div>
+
+            <div class="box box5" enctype="multipart/form-data" method="post">
+                <h5 onclick="closeGig()"><ion-icon name="close-outline"></ion-icon></h5>
+                <h2>Create Gig</h2>
+                <p>Hey {{request.user.username }}, create your gig now</p>
+                
+
+                    <div class="choose">
+                        <img src="{% static 'images/image.png' %}" alt="" class="profile-pic">
+                        <div>
+                            <p>Choose Gig Image <input type="file" name="image" onchange="setProfilePic(this)" required></p>
+                            <!-- <h4>No file chosen</h4> -->
+                        </div>
+                    </div>
+                    
+                    <div class="group">
+                       
+
+                        <div class="field-inp">
+                            <h4>Delivery Time</h4>
+                            <input type="number" name="delivery" id="" class="inp4" placeholder="E.g 1 day" required oninput="check4()" min="1" required>
+                        </div>
+                        <div class="field-inp">
+                            <h4>Avg. response time</h4>
+                            <input type="number" name="response" id="" placeholder="E.g 3 hours" class="inp4" required oninput="check4()" required>
+                        </div>
+                    </div>
+                    
+                <div class="page-buttons">
+                    <button type="button" onclick="showPrevious1()"><ion-icon name="arrow-back-outline" style="transform: rotate(0deg);font-size: 17px;"></ion-icon> Previous</button>
+
+                    <button type="submit" class="finish1" style="opacity: 0.5;pointer-events: none;">Finish Signup <ion-icon name="arrow-forward-outline" style="transform: rotate(0deg);font-size: 17px;"></ion-icon></button>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="navbar-wrapper">
+
+            <div class="navbar">
+                <div class="left">
+                    <a href="{% url 'homepage' %}" style="margin-top: 3px;"><img src="{% static 'images/logo.png' %}" alt=""></a>
+                    <div class="links">
+                        <a href="" style="display: flex;justify-content: center;align-items: center;gap: 15px;"><ion-icon name="home" style="color: #07a44b;"></ion-icon>  Home</a>
+                        
+                        <a href="{% url 'gigs' %}" style="display: flex;justify-content: center;align-items: center;gap: 15px;"><ion-icon name="document-text" style="color: #07a44b;"></ion-icon> JOBS</a>
+                        {% if request.user.is_authenticated %}
+                        <a href="{% url 'saved' %}" style="display: flex;justify-content: center;align-items: center;gap: 15px;"><ion-icon name="bookmark" style="color: #07a44b;"></ion-icon> APPLIED JOBS</a>
+                        <!-- <a style="position: relative;cursor: pointer;display: flex;justify-content: center;align-items: center;gap: 15px;"><ion-icon name="newspaper" style="color: #07a44b;"></ion-icon> Upload Resume <input type="file" name="" id="file" style="width: 100%;height: 100%;position: absolute;top: 0;left: 0;opacity: 0;cursor: pointer;"  onchange="uploadResume()"></a> -->
+
+                        {% endif %}
+
+                        <!-- <a href="">About</a> -->
+                        <!-- <a onclick="showHow()"  style="display: flex;justify-content: center;align-items: center;gap: 15px;"><ion-icon name="call" style="color: #07a44b;"></ion-icon> Contact</a> -->
+                        <!-- <a href="">Contact</a> -->
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    {% if not request.user.is_authenticated %}
+                    
+                    <a href="{% url 'showLogin' %}"><button >Login in to my account</button></a>
+                    
+                   
+                    <a href="{% url 'signup' %}"><button style="width: 120px;background-color: #07a44b;color: white;border: 2px solid #07a44b;">Signup</button></a>
+                        
+
+                    {% else %}
+                    <!-- <a href="{% url 'saved' %}"><button style="width: 45px;height:45px;border: 2px solid rgb(230, 230, 230);font-size:16px" class="icon"><ion-icon name="bookmark"></ion-icon></button></a> -->
+                    {% if profile.is_company %}
+                    <a href="{% url 'createPost' %}" style="color: black;opacity: 1;"><button style="border: 2px solid rgb(230, 230, 230);width: 150px;opacity: 1;" class="icon create-btn">Create Post</button></a>
+                    <!-- <a href="{% url 'logout' %}"><button style="width: 45px;height:45px;border: 2px solid rgb(230, 230, 230);font-size:16px" class="icon"><ion-icon name="log-out"></ion-icon></button></a> -->
+                    {% endif %}
+                    <div class="profile" style="padding:5px;" >
+                        <input type="hidden" value="0" class="open1">
+                        
+                        <a href="{% url 'profileView' pk=profile.user.pk %}"><img src="{{profile.image.url}}" alt="" ></a>
+                        
+                        
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="navbar-mobile navMob">
+            <div>
+                <input type="hidden" name="" id="" value="0" class="menuOpen">
+                <h3 class="mbtn" onclick="showMenu()"><ion-icon name="menu-outline"></ion-icon></h3>
+                <a href="{% url 'homepage' %}"><img src="{% static 'images/logo2.png' %}" alt=""></a>
+
+            </div>
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'profileView' pk=request.user.pk %}"><img src="{{profile.image.url}}" alt="" class="profile-mobile"></a>
+            {% endif %}
+        </div>
+        <div class="menu-wrap">
+
+        
+            <div class="menu">
+                <a href="{% url 'homepage' %}"><ion-icon name="home" style="color: #07a44b;"></ion-icon> Home</a>
+                <a href="{% url 'gigs' %}"><ion-icon name="document-text" style="color: #07a44b;"></ion-icon> Posts</a>
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'saved' %}"><ion-icon name="bookmark" style="color: #07a44b;"></ion-icon> Saved</a>
+                <a href="{% url 'logout' %}"><ion-icon name="log-out" style="color: #07a44b;"></ion-icon> Logout</a>
+                {% else %}
+                <a href="{% url 'showLogin' %}"><ion-icon name="log-in" style="color: #07a44b;"></ion-icon> Login</a>
+                <a href="{% url 'signup' %}"><ion-icon name="person-add" style="color: #07a44b;"></ion-icon> Signup</a>
+
+                {% endif %}
+            </div>
+
+        </div>
+
+        <div class="profile-wrapper">
+
+            <img src="{% static 'images/banner1.jpg' %}" alt="" class="wrapper-img">
+
+            <div class="profile-details">
+                <div class = "pWrap">
+                    <div class="img-details">
+                        <div class="user-details">
+
+                        
+                        <img src="{{userProfile.image.url}}" alt="">
+                            <div class="extra">
+                                {% if userProfile.is_company %}
+                                <h4><ion-icon name="checkmark-circle"></ion-icon> Company</h4>
+                                {% else %}
+                                <h4><ion-icon name="checkmark-circle"></ion-icon> Job Seeker</h4>
+
+                                {% endif %}
+                                <h3>{{userProfile.user.username}}</h3>
+                                <p>Member since : {{userProfile.date}} </p>
+                                {% if not userProfile.is_company %}
+                                <div class="skills">
+
+                                    {% for skill in skills %}
+                                    <button>{{skill}}</button>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="extra-right">
+                            <!-- <h2>£{{userProfile.maximum_rate}}.00</h2>
+                            <h4>(per hour)</h4> -->
+                            {% if request.user.is_authenticated %}
+                            {% if request.user.username != userProfile.user.username %}
+                            <button onclick="showMsg()" style="cursor: pointer;"><ion-icon name="chatbubble-ellipses"></ion-icon> Message</button>
+                            {% else %}
+                            <a href="{% url 'logout' %}" style="text-decoration: none;color: black;font-weight: 600;"><button style="background-color: rgb(255, 255, 255);color: rgb(19, 19, 19);border: 2px solid rgb(235, 235, 235);width: 100%;cursor: pointer;font-weight: 600;"><ion-icon name="log-out"></ion-icon> Generate Resume</button></a>
+                            <div style="display: flex;justify-content: center;align-items: center;gap: 25px;">
+                                
+                                <button onclick="showEdit()" style="background-color: white;color: black;border: 2px solid rgb(234, 234, 234);width: 130px;cursor: pointer;"><ion-icon name="create"></ion-icon> Edit</button>
+                                <button onclick="showDelete()" style="background-color: rgb(192, 47, 47);color: rgb(255, 255, 255);border: 2px solid rgb(234, 234, 234);width: 190px;cursor: pointer;"><ion-icon name="trash"></ion-icon> Delete account</button>
+                                
+                            </div>
+
+                            <a href="{% url 'logout' %}" style="text-decoration: none;color: black;font-weight: 600;"><button style="background-color: rgb(255, 255, 255);color: rgb(19, 19, 19);border: 2px solid rgb(235, 235, 235);width: 100%;cursor: pointer;font-weight: 600;"><ion-icon name="log-out"></ion-icon> Logout of my account</button></a>
+
+                            {% endif %}
+                            {% endif %}
+                        </div>
+
+                </div>
+
+                <div class="personal-details" style="justify-content: space-around;margin-top: 25px;">
+
+                    <div class="column">
+                        <h1><ion-icon name="location"></ion-icon></h1>
+                        <div>
+                            <h4>Location</h4>
+                            <p>{{userProfile.location}}</p>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <h1><ion-icon name="call"></ion-icon></h1>
+                        <div>
+                            <h4>Phone</h4>
+                            <p>{{userProfile.phone}}</p>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <h1><ion-icon name="mail"></ion-icon></h1>
+                        <div>
+                            <h4>Email</h4>
+                            <p>{{userProfile.user.email}}</p>
+                        </div>
+                    </div>
+
+                    <!-- <div class="column">
+                        <h1><ion-icon name="person"></ion-icon></h1>
+                        <div>
+                            <h4>Age</h4>
+                            <p>{{userProfile.age}}</p>
+                        </div>
+                    </div> -->
+                </div>
+                    
+                
+            </div>
+
+        </div>
+<center>
+        <div class="profile-wrapper-mobile">
+
+            <img src="{{userProfile.image.url}}" alt="">
+            
+            <h3 class="userprofilename">{{userProfile.user.username}}</h3>
+            <h4 class="memberSince">Member since : {{userProfile.date}}</h4>
+
+            <div class="skills">
+
+                {% for skill in skills %}
+                <button>{{skill}}</button>
+                {% endfor %}
+            </div>
+            <a href="{% url 'createPost' %}" style="text-decoration: none;color: black;font-weight: 600;margin-bottom: 15px;"><button style="background-color: rgb(255, 255, 255);color: rgb(19, 19, 19);border: 2px solid rgb(235, 235, 235);width: 250px;cursor: pointer;font-weight: 600;padding: 10px;"><ion-icon name="create"></ion-icon> Create Post</button></a>
+
+
+            <div class="personal-details">
+
+                <div class="column">
+                    <h1><ion-icon name="location"></ion-icon></h1>
+                    <div>
+                        <h4>Location</h4>
+                        <p>{{userProfile.location}}</p>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <h1><ion-icon name="call"></ion-icon></h1>
+                    <div>
+                        <h4>Phone</h4>
+                        <p>{{userProfile.phone}}</p>
+                    </div>
+                </div>
+                
+                <div class="column">
+                    <h1><ion-icon name="mail"></ion-icon></h1>
+                    <div>
+                        <h4>Email</h4>
+                        <p>{{userProfile.user.email}}</p>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <h1><ion-icon name="person"></ion-icon></h1>
+                    <div>
+                        <h4>Age</h4>
+                        <p>{{userProfile.age}}</p>
+                    </div>
+                </div>
+            </div>
+            {% if request.user.is_authenticated and request.user.username == userProfile.user.username %}
+            <div style="display: flex;justify-content: center;align-items: center;gap: 25px;" class="btns-profile">
+
+                <button onclick="showEdit()" style="background-color: white;color: black;border: 2px solid rgb(234, 234, 234);cursor: pointer;"><ion-icon name="create"></ion-icon> Edit account</button>
+                <button onclick="showDelete()" style="background-color: rgb(192, 47, 47);color: rgb(255, 255, 255);border: 2px solid rgb(234, 234, 234);cursor: pointer;"><ion-icon name="trash"></ion-icon> Delete account</button>
+                <a href="{% url 'logout' %}" style="text-decoration: none;color: black;font-weight: 600;margin-bottom: 15px;"><button style="background-color: rgb(255, 255, 255);color: rgb(19, 19, 19);border: 2px solid rgb(235, 235, 235);cursor: pointer;font-weight: 600;padding: 10px;"><ion-icon name="log-out"></ion-icon>Logout</button></a>
+
+            </div>
+            {% else %}
+            
+                <button onclick="showMsg()" class="mbttn"><ion-icon name="chatbubble-ellipses"></ion-icon> Message</button>
+                           
+            {% endif %}
+
+
+
+
+        </div>
+    </center>
+
+
+        <center>
+            {% if gigs %}
+            <div class="text2" style="margin-top: 50px;">
+                <h2>Recent Posts</h2>
+                <p>Browse the jobs you want from {{userProfile.user.username}}</p>
+            </div>
+            {% endif %}
+            
+            <div class="posts-wrapper">
+
+                <div class="posts">
+
+                    {% for gig in gigs %}
+                    <div class="post">
+                        <input type="hidden" value="{{gig.saved}}" class="post{{gig.pk}}">
+                        <img src="{{gig.image}}" alt="" class="post-img">
+                        <div class="author">
+                            <img src="{{gig.avatar}}" alt="" class="author-img">
+                            <a href="{% url 'profileView' pk=gig.user.pk %}" style="text-decoration: none;color: black;"><h3>{{gig.user.username}}</h3></a>
+                        </div>
+                        <h3 class="title1" style="text-align: left;"><a href="{% url 'gigView' pk=gig.pk %}">{{gig.title}}</a></h3>
+                        <div class="rating">
+                            <div>
+                                
+                                <h2>{{gig.date}}</h2>
+
+                            </div>
+                            <h4>VERIFIED</h4>
+
+
+                        </div>
+                       
+                        <div class="post-bottom">
+                            {% if not gig.saved %}
+                            <button onclick="save('{{gig.pk}}',this)"><ion-icon name="bookmark-outline"></ion-icon> Save</button>
+                            {% else %}
+                            <button onclick="save('{{gig.pk}}',this)"><ion-icon name="bookmark"></ion-icon> Saved </button>
+
+                            {% endif %}
+                            <div>
+                                <p>Starting at</p>
+                                <h5>₹{{gig.price}}</h5>
+                            </div>
+                        </div>
+
+                    </div>
+                    {% endfor %}
+                    
+                    
+                </div>
+
+            </div>
+            
+            
+
+        </center>
+        <center>
+            
+           
+            <!-- <a href="{% url 'freelancers' %}" style="text-decoration: none;"><button class="view view2">View All Freelancers <ion-icon name="arrow-forward"></ion-icon></button></a> -->
+            
+            <div class="section" style="width: 100%;background-image:none;border-radius: 0px;background-color: #222;margin-top: 170px;">
+                <div class="content">
+                    <h2 style="color: white;">Find the talent needed to get your business growing.</h2>
+                    <p style="color: rgb(167, 167, 167);">Advertise your jobs to millions of monthly users and search 15k CVs</p>
+                    <a href="{% url 'gigs' %}" style="cursor: pointer;text-decoration: none;"><button style="background-color: #07a44b;border-radius: 5px;color: white;display: flex;justify-content: center;align-items: center;gap: 10px;">Get Started <ion-icon name="arrow-forward-outline" style="transform: rotate(-45deg);font-size: 17px;"></ion-icon></button></a>
+                </div>
+                <img src="{% static 'images/h361.png' %}" alt="">
+            </div>
+        </center>
+        <footer class="footer1">
+            <div class="left-side">
+                <h3>ProLink@gmail.com</h3>
+                
+            </div>
+
+            <div class="right-side">
+                <h3>Follow us</h3>
+                <h4><i class="fa-brands fa-facebook-f"></i></h4>
+                <h4><i class="fa-brands fa-twitter"></i></h4>
+                <h4><i class="fa-brands fa-instagram"></i></h4>
+        </footer>
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+    <script>
+    
+
+        function sendData(){
+            
+            var data = new FormData()
+
+
+            if(document.querySelector('.email').value == '' && document.querySelector('.password').value == ''){
+                alert('please fill the fields')
+            }
+
+            else{
+    
+            data.append("email", document.querySelector('.email').value)
+            data.append("password", document.querySelector('.password').value)
+    
+            
+    
+            data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+            
+            $.ajax({
+    
+                method:"POST",
+                url:'/checkLogin/',
+                processData:false,
+                contentType:false,
+                // MimeType:"multipart/form-data",
+                data:data,
+                success:function(res){
+                    localStorage.setItem("message",res.message)
+    
+                    if(res.message === 0){
+                        
+                        login(data)
+                        localStorage.setItem("email",document.querySelector('.email').value)
+                        localStorage.setItem('password',document.querySelector('.password').value)
+                        // location.reload();
+                        
+                    }
+                    else{
+                        document.querySelector('.error').style.display = "flex"
+                        
+                    }
+                    
+    
+                }
+            })
+
+        }
+        }
+    
+        function login(data){
+    
+    
+            $.ajax({
+    
+                method:"POST",
+                url:'/login/',
+                processData:false,
+                contentType:false,
+                MimeType:"multipart/form-data",
+                data:data,
+                success:function(res){
+                    console.log("it worked :)")
+                    
+                    setTimeout(()=>{
+    
+                        location.reload();
+                    },1000)
+                }
+                })
+        }
+
+        
+
+        function check(){
+            var inputs = document.querySelectorAll('.inp')
+            
+            var error = 0;
+            for(var i = 0;i<inputs.length;i++){
+                if(inputs[i].value == '' ){
+                    // inputs[i].style.border = "1px solid rgb(226, 226, 226)"
+                    console.log("false");
+                    error = 1
+                    
+                    break
+                }
+                else{
+                    
+                    error = 0
+                }
+
+                
+
+                
+
+            }
+            
+
+            
+            var data = new FormData()
+
+            data.append("username", document.querySelector('.username').value)
+            data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+            $.ajax({
+
+                method:"POST",
+                url:'/checkUsername/',
+                processData:false,
+                contentType:false,
+                MimeType:"multipart/form-data",
+                data:data,
+                success:function(res){
+
+                    
+                    if(res.result == "1"){
+                        document.querySelector('.error3').style.display = "flex"
+                        error = 1
+                        document.querySelector('.check').value = ""
+                        document.querySelector('.next').style.opacity = "0.5"
+                        document.querySelector('.next').style.pointerEvents = "none"
+                        
+                    }
+                    else{
+                        document.querySelector('.error3').style.display = "none"
+                        document.querySelector('.check').value = "1"
+                        error = 0
+                    }
+
+                }
+                })
+        
+
+            
+
+            if(error == 0){
+                document.querySelector('.next').style.opacity = "1"
+                document.querySelector('.next').style.pointerEvents = "all"
+            }
+            
+        }
+
+        function check2(){
+            var inputs = document.querySelectorAll('.inp1')
+            
+            var error = 0;
+            for(var i = 0;i<inputs.length;i++){
+                if(inputs[i].value == ''){
+                    // inputs[i].style.border = "1px solid rgb(226, 226, 226)"
+                    console.log("false");
+                    error = 1
+                    break
+                }
+                else{
+                    
+                    error = 0
+                }
+
+                
+
+            }
+            if(error == 0){
+                document.querySelector('.finish').style.opacity = "1"
+                document.querySelector('.finish').style.pointerEvents = "all"
+            }
+        }
+
+        function check3(){
+            var inputs = document.querySelectorAll('.inp3')
+            
+            var error = 0;
+            for(var i = 0;i<inputs.length;i++){
+                if(inputs[i].value == ''){
+                    // inputs[i].style.border = "1px solid rgb(226, 226, 226)"
+                    console.log("false");
+                    error = 1
+                    break
+                }
+                else{
+                    
+                    error = 0
+                }
+
+                
+
+            }
+            if(error == 0){
+                document.querySelector('.next1').style.opacity = "1"
+                document.querySelector('.next1').style.pointerEvents = "all"
+            }
+        }
+
+        function check4(){
+            var inputs = document.querySelectorAll('.inp4')
+            
+            var error = 0;
+            for(var i = 0;i<inputs.length;i++){
+                if(inputs[i].value == ''){
+                    // inputs[i].style.border = "1px solid rgb(226, 226, 226)"
+                    console.log("false");
+                    error = 1
+                    break
+                }
+                else{
+                    
+                    error = 0
+                }
+
+                
+
+            }
+            if(error == 0){
+                document.querySelector('.finish1').style.opacity = "1"
+                document.querySelector('.finish1').style.pointerEvents = "all"
+            }
+        }
+
+        function save(pk,element){
+            var data = new FormData()
+
+            data.append("pk", pk)
+            // data.append("password", document.querySelector('.password').value)
+            console.log(pk);
+            data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+
+            $.ajax({
+
+          method:"POST",
+          url:'/save/',
+          processData:false,
+          contentType:false,
+          MimeType:"multipart/form-data",
+          data:data,
+          success:function(res){
+            console.log(document.querySelector('.post'+pk).value);
+            if(document.querySelector('.post'+pk).value == "0"){
+                
+                element.innerHTML = '<ion-icon name="bookmark"></ion-icon> Saved'
+                document.querySelector('.post'+pk).value = "1"
+            }
+            else{
+                element.innerHTML = '<ion-icon name="bookmark-outline"></ion-icon> Save'
+                document.querySelector('.post'+pk).value = "0"
+            }
+          }
+          })
+
+        }
+
+        function open1(){
+
+            if(document.querySelector('.open1').value == "0"){
+                document.querySelector('.profile-options').style.display = 'flex'
+                document.querySelector('.open1').value = "1"
+            }
+
+            else{
+                document.querySelector('.profile-options').style.display = 'none'
+                document.querySelector('.open1').value = "0"
+            }
+        }
+
+        function sendMsg(){
+
+            if(document.querySelector('.text-msg').value !=""){
+            var data = new FormData();
+            
+            data.append("message", document.querySelector('.text-msg').value)
+            data.append("from_user", document.querySelector('.from_user').value)
+            data.append("to_user", document.querySelector('.to_user').value)  
+
+            data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+
+            
+            $.ajax({
+    
+                method:"POST",
+                url:'/sendMsg/',
+                processData:false,
+                contentType:false,
+                MimeType:"multipart/form-data",
+                data:data,
+                success:function(res){
+                    
+                    var chat = document.createElement('div')
+                    chat.classList.add('right-chat')
+
+                    var h4 = document.createElement('h4')
+                    h4.innerText = document.querySelector('.text-msg').value
+                    chat.append(h4)
+
+                    var messages = document.querySelector('.messages')
+
+                    messages.appendChild(chat)
+                    document.querySelector('.text-msg').value = "";
+                    
+                }
+                })
+
+            }
+        }
+
+        $('.text-msg').keydown(function(event) {
+            
+            var data = new FormData();
+
+            if(document.querySelector('.text-msg').value !=""){
+
+            data.append("message", document.querySelector('.text-msg').value)
+            data.append("from_user", document.querySelector('.from_user').value)
+            data.append("to_user", document.querySelector('.to_user').value)
+            
+            data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+    
+            if (event.keyCode == 13) {
+                $.ajax({
+                
+                method:"POST",
+                url:'/sendMsg/',
+                processData:false,
+                contentType:false,
+                MimeType:"multipart/form-data",
+                data:data,
+                success:function(res){
+                    
+                    var chat = document.createElement('div')
+                    chat.classList.add('right-chat')
+
+                    var h4 = document.createElement('h4')
+                    h4.innerText = document.querySelector('.text-msg').value
+                    chat.append(h4)
+
+                    var messages = document.querySelector('.messages')
+
+                    messages.appendChild(chat)
+                    document.querySelector('.text-msg').value = "";
+                    
+                }
+                })
+            return false;
+            }
+            }
+        });
+
+        function showMsg(){
+            document.querySelector('.message').style.display = "block"
+        }
+
+        function closeMsg(){
+            document.querySelector('.message').style.display = "none"
+        }
+
+        function showDelete(){
+            document.querySelector('.delete').style.display = "flex"
+            // document.querySelector('.gig-details').style.display = "none"
+        }
+
+        function closeDelete(){
+            document.querySelector('.delete').style.display = "none"
+            // document.querySelector('.gig-details').style.display = "flex"
+        }
+
+        function showEdit(){
+            document.querySelector('.signup-wrapper').style.display = "flex"
+        }
+
+
+        function showHow(){
+        const element = document.querySelector(".how");
+        element.scrollIntoView();   
+    }
+
+    window.onload = function() {
+        console.log("heeeeeeeeeee");
+        document.querySelector('.footer1').scrollIntoView()
+      };
+      const target = document.querySelector(".resume");
+      document.querySelector('.download').addEventListener("click", function() {
+  html2canvas(target,{ useCORS: true }).then(function(canvas) {
+    // Convert the canvas to a PNG image
+    const pngUrl = canvas.toDataURL("image/png");
+    
+    // Create a download link and trigger a click event
+    const downloadLink = document.createElement("a");
+    downloadLink.href = pngUrl;
+    downloadLink.download = "resume.png";
+    downloadLink.click();
+  });
+});
+    </script>
+
+</body>
+</html>

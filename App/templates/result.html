@@ -1,0 +1,442 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job</title>
+    <link rel="stylesheet" href="{% static 'css/view.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body id="style-2">
+    <div class="container">
+
+      
+
+
+
+
+        <div class="navbar-wrapper">
+
+            <div class="navbar">
+                <div class="left">
+                    <a href="{% url 'homepage' %}" style="margin-top: 3px;"><img src="{% static 'images/logo.png' %}" alt=""></a>
+                    <div class="links">
+                        <a href="{% url 'homepage' %}" style="display: flex;justify-content: center;align-items: center;gap: 15px;"><ion-icon name="home" style="color: #07a44b;"></ion-icon>  Home</a>
+                        
+                        <!-- <a href="{% url 'gigs' %}" style="display: flex;justify-content: center;align-items: center;gap: 15px;"><ion-icon name="document-text" style="color: #07a44b;"></ion-icon> Gigs</a> -->
+                        <a href="{% url 'gigs' %}" style="display: flex;justify-content: center;align-items: center;gap: 15px;"><ion-icon name="document-text" style="color: #07a44b;"></ion-icon> Jobs</a>
+                        {% if request.user.is_authenticated %}
+                        <a href="{% url 'saved' %}" style="display: flex;justify-content: center;align-items: center;gap: 15px;"><ion-icon name="bookmark" style="color: #07a44b;"></ion-icon> Applied Jobs</a>
+                        {% endif %}
+                        <!-- <a href="">About</a> -->
+                        <!-- <a onclick="showHow()"  style="display: flex;justify-content: center;align-items: center;gap: 15px;"><ion-icon name="call" style="color: #07a44b;"></ion-icon> Contact</a> -->
+                        <!-- <a href="">Contact</a> -->
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    {% if not request.user.is_authenticated %}
+                    
+                    <a href="{% url 'showLogin' %}"><button >Login in to my account</button></a>
+                    
+                   
+                    <a href="{% url 'signup' %}"><button style="width: 120px;background-color: #07a44b;color: white;border: 2px solid #07a44b;">Signup</button></a>
+                        
+
+                    {% else %}
+                    <!-- <a href="{% url 'saved' %}"><button style="width: 45px;height:45px;border: 2px solid rgb(230, 230, 230);font-size:16px" class="icon"><ion-icon name="bookmark"></ion-icon></button></a> -->
+
+                    {% if profile.is_company %}
+                    <a href="{% url 'createPost' %}" style="color: black;opacity: 1;"><button style="border: 2px solid rgb(230, 230, 230);width: 150px;opacity: 1;" class="icon create-btn">Create Post</button></a>
+                    <!-- <a href="{% url 'logout' %}"><button style="width: 45px;height:45px;border: 2px solid rgb(230, 230, 230);font-size:16px" class="icon"><ion-icon name="log-out"></ion-icon></button></a> -->
+                    {% endif %}                    <!-- <a href="{% url 'logout' %}"><button style="width: 45px;height:45px;border: 2px solid rgb(230, 230, 230);font-size:16px" class="icon"><ion-icon name="log-out"></ion-icon></button></a> -->
+                    
+                    <div class="profile" style="padding:5px;" >
+                        <input type="hidden" value="0" class="open1">
+                        <a href="{% url 'profileView' pk=profile.user.pk %}"><img src="{{profile.image.url}}" alt="" ></a>
+                        
+                        
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="navbar-mobile">
+            <div>
+                <input type="hidden" name="" id="" value="0" class="menuOpen">
+                <h3 class="mbtn" onclick="showMenu()"><ion-icon name="menu-outline"></ion-icon></h3>
+                <a href="{% url 'homepage' %}"><img src="{% static 'images/logo2.png' %}" alt=""></a>
+
+            </div>
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'profileView' pk=request.user.pk %}"><img src="{{profile.image.url}}" alt="" class="profile-mobile"></a>
+            {% endif %}
+        </div>
+        <div class="menu-wrap">
+
+        
+            <div class="menu">
+                <a href="{% url 'homepage' %}"><ion-icon name="home" style="color: #07a44b;"></ion-icon> Home</a>
+                <a href="{% url 'gigs' %}"><ion-icon name="document-text" style="color: #07a44b;"></ion-icon> Posts</a>
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'saved' %}"><ion-icon name="bookmark" style="color: #07a44b;"></ion-icon> Saved</a>
+                <a href="{% url 'logout' %}"><ion-icon name="log-out" style="color: #07a44b;"></ion-icon> Logout</a>
+                {% else %}
+                <a href="{% url 'showLogin' %}"><ion-icon name="log-in" style="color: #07a44b;"></ion-icon> Login</a>
+                <a href="{% url 'signup' %}"><ion-icon name="person-add" style="color: #07a44b;"></ion-icon> Signup</a>
+
+                {% endif %}
+            </div>
+
+        </div>
+
+       
+        <div class="banner" id="startchange" style="background-color: #e6e6e6;margin-top: 80px;">
+            <div class="text">
+                <!-- <img src="{% static 'images/avatar.png' %}" alt=""> -->
+                <h1>Mock Test Result</h1>
+                <h3 class="browse">Below is the score you got.</h3>
+                <!-- <button>View<span > Profile </span></button> -->
+            </div>
+        </div>
+<center>                
+
+</center>
+            <div class="wrap-ques" style="padding-left: 60px;" action="{% url 'getResult' %}" method="POST">
+                <h2 style="margin-top: 55px;font-size: 19px;background-color: rgb(16, 16, 16);color: white;padding: 8px;width: fit-content;">You score is : {{score}}</h2>
+
+                {% csrf_token %}
+                {% for question in questions %}
+                <div class="question" style="margin-top: 35px;display: flex;flex-direction: column;align-items: flex-start;padding-left: 0px;">
+                    <div style="display: flex;flex-direction: column;align-items: flex-start;">
+                        <!-- <input type="hidden" name="question{{question.question.pk}}" value="{{question.question.pk}}"> -->
+                        <h3 style="margin-bottom: 25px;">{{ forloop.counter }}. {{question.question}}</h3>
+                        {% for option in question.options %}
+                        <div class="options" style="display: flex;justify-content: center;align-items: center;gap: 35px;">
+                            
+                            <div style="display: flex;justify-content: center;align-items: center;gap: 35px;">
+
+                                <h5 style="font-size: 17px;opacity: 0.6;">Your Answer : {{question.answer}}</h5>
+                                
+                                <h5 style="font-size: 17px;opacity: 0.6;">Correct Answer : {{question.question.answer}}</h5>
+                            </div>
+                            
+                        {% endfor %}
+                        
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                {% endfor %}
+
+
+                
+                    <button  type="button" style="text-decoration: none;margin-top: -135px;"><button class="view" onclick="goBack()"><ion-icon name="arrow-back-outline"></ion-icon> Go back </button></button>
+               
+
+            </div>
+
+           
+        
+        <!-- <footer>
+            <div class="left-side">
+                <h3>ProLink@gmail.com</h3>
+                
+            </div>
+
+            <div class="right-side">
+                <h3>Follow us</h3>
+                <h4><i class="fa-brands fa-facebook-f"></i></h4>
+                <h4><i class="fa-brands fa-twitter"></i></h4>
+                <h4><i class="fa-brands fa-instagram"></i></h4>
+        </footer> -->
+
+    </div>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+    <script>
+    
+
+        function sendData(){
+            
+            var data = new FormData()
+
+
+            if(document.querySelector('.email').value == '' && document.querySelector('.password').value == ''){
+                alert('please fill the fields')
+            }
+
+            else{
+    
+            data.append("email", document.querySelector('.email').value)
+            data.append("password", document.querySelector('.password').value)
+    
+            
+    
+            data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+            
+            $.ajax({
+    
+                method:"POST",
+                url:'/checkLogin/',
+                processData:false,
+                contentType:false,
+                // MimeType:"multipart/form-data",
+                data:data,
+                success:function(res){
+                    localStorage.setItem("message",res.message)
+    
+                    if(res.message === 0){
+                        
+                        login(data)
+                        localStorage.setItem("email",document.querySelector('.email').value)
+                        localStorage.setItem('password',document.querySelector('.password').value)
+                        // location.reload();
+                        
+                    }
+                    else{
+                        document.querySelector('.error').style.display = "flex"
+                        
+                    }
+                    
+    
+                }
+            })
+
+        }
+        }
+    
+        function login(data){
+    
+    
+            $.ajax({
+    
+                method:"POST",
+                url:'/login/',
+                processData:false,
+                contentType:false,
+                MimeType:"multipart/form-data",
+                data:data,
+                success:function(res){
+                    console.log("it worked :)")
+                    
+                    setTimeout(()=>{
+    
+                        location.reload();
+                    },1000)
+                }
+                })
+        }
+
+        
+
+        function check(){
+            var inputs = document.querySelectorAll('.inp')
+            
+            var error = 0;
+            for(var i = 0;i<inputs.length;i++){
+                if(inputs[i].value == '' ){
+                    // inputs[i].style.border = "1px solid rgb(226, 226, 226)"
+                    console.log("false");
+                    error = 1
+                    
+                    break
+                }
+                else{
+                    
+                    error = 0
+                }
+
+                
+
+                
+
+            }
+            
+
+            
+            var data = new FormData()
+
+            data.append("username", document.querySelector('.username').value)
+            data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+            $.ajax({
+
+                method:"POST",
+                url:'/checkUsername/',
+                processData:false,
+                contentType:false,
+                MimeType:"multipart/form-data",
+                data:data,
+                success:function(res){
+
+                    
+                    if(res.result == "1"){
+                        document.querySelector('.error3').style.display = "flex"
+                        error = 1
+                        document.querySelector('.check').value = ""
+                        document.querySelector('.next').style.opacity = "0.5"
+                        document.querySelector('.next').style.pointerEvents = "none"
+                        
+                    }
+                    else{
+                        document.querySelector('.error3').style.display = "none"
+                        document.querySelector('.check').value = "1"
+                        error = 0
+                    }
+
+                }
+                })
+        
+
+            
+
+            if(error == 0){
+                document.querySelector('.next').style.opacity = "1"
+                document.querySelector('.next').style.pointerEvents = "all"
+            }
+            
+        }
+
+        function check2(){
+            var inputs = document.querySelectorAll('.inp1')
+            
+            var error = 0;
+            for(var i = 0;i<inputs.length;i++){
+                if(inputs[i].value == ''){
+                    // inputs[i].style.border = "1px solid rgb(226, 226, 226)"
+                    console.log("false");
+                    error = 1
+                    break
+                }
+                else{
+                    
+                    error = 0
+                }
+
+                
+
+            }
+            if(error == 0){
+                document.querySelector('.finish').style.opacity = "1"
+                document.querySelector('.finish').style.pointerEvents = "all"
+            }
+        }
+
+        function check3(){
+            var inputs = document.querySelectorAll('.inp3')
+            
+            var error = 0;
+            for(var i = 0;i<inputs.length;i++){
+                if(inputs[i].value == ''){
+                    // inputs[i].style.border = "1px solid rgb(226, 226, 226)"
+                    console.log("false");
+                    error = 1
+                    break
+                }
+                else{
+                    
+                    error = 0
+                }
+
+                
+
+            }
+            if(error == 0){
+                document.querySelector('.next1').style.opacity = "1"
+                document.querySelector('.next1').style.pointerEvents = "all"
+            }
+        }
+
+        function check4(){
+            var inputs = document.querySelectorAll('.inp4')
+            
+            var error = 0;
+            for(var i = 0;i<inputs.length;i++){
+                if(inputs[i].value == ''){
+                    // inputs[i].style.border = "1px solid rgb(226, 226, 226)"
+                    console.log("false");
+                    error = 1
+                    break
+                }
+                else{
+                    
+                    error = 0
+                }
+
+                
+
+            }
+            if(error == 0){
+                document.querySelector('.finish1').style.opacity = "1"
+                document.querySelector('.finish1').style.pointerEvents = "all"
+            }
+        }
+
+        function save(pk,element){
+            var data = new FormData()
+
+            data.append("pk", pk)
+            // data.append("password", document.querySelector('.password').value)
+            console.log(pk);
+            data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+
+            $.ajax({
+
+          method:"POST",
+          url:'/save/',
+          processData:false,
+          contentType:false,
+          MimeType:"multipart/form-data",
+          data:data,
+          success:function(res){
+            console.log(document.querySelector('.post'+pk).value);
+            if(document.querySelector('.post'+pk).value == "0"){
+                
+                element.innerHTML = '<ion-icon name="bookmark"></ion-icon> Saved'
+                document.querySelector('.post'+pk).value = "1"
+            }
+            else{
+                element.innerHTML = '<ion-icon name="bookmark-outline"></ion-icon> Save'
+                document.querySelector('.post'+pk).value = "0"
+            }
+
+            // location.reload()
+          }
+          })
+
+        }
+
+        function open1(){
+
+            if(document.querySelector('.open1').value == "0"){
+                document.querySelector('.profile-options').style.display = 'flex'
+                document.querySelector('.open1').value = "1"
+            }
+
+            else{
+                document.querySelector('.profile-options').style.display = 'none'
+                document.querySelector('.open1').value = "0"
+            }
+        }
+
+        function showHow(){
+        const element = document.querySelector(".how");
+        element.scrollIntoView();   
+    }
+
+    function goBack(){
+        history.back()
+    }
+
+    </script>
+
+</body>
+</html>

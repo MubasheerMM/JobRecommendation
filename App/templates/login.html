@@ -1,0 +1,638 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job</title>
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body id="style-2" class="body">
+    <div class="container">
+
+
+        <div class="navbar-wrapper" style="background-color: white;z-index: 1500;position: relative;">
+
+            <div class="navbar">
+                <div class="left">
+                    <a href="{% url 'homepage' %}" style="margin-top: 3px;"><img src="{% static 'images/logo.png' %}" alt=""></a>
+                    <div class="links">
+                        <a href="{% url 'homepage' %}" style="display: flex;justify-content: center;align-items: center;gap: 15px;"><ion-icon name="home" style="color: #07a44b;"></ion-icon>  Home</a>
+                        
+                        <a href="{% url 'gigs' %}" style="display: flex;justify-content: center;align-items: center;gap: 15px;"><ion-icon name="document-text" style="color: #07a44b;"></ion-icon> Jobs</a>
+                        {% if request.user.is_authenticated %}
+                        <a href="{% url 'saved' %}" style="display: flex;justify-content: center;align-items: center;gap: 15px;"><ion-icon name="bookmark" style="color: #07a44b;"></ion-icon> Applied Jobs</a>
+                        {% endif %}
+                        <!-- <a href="">About</a> -->
+                        <!-- <a onclick="showHow()"  style="display: flex;justify-content: center;align-items: center;gap: 15px;"><ion-icon name="call" style="color: #07a44b;"></ion-icon> Contact</a> -->
+                        <!-- <a href="">Contact</a> -->
+                    </div>
+                </div>
+
+                <div class="buttons">
+                    {% if not request.user.is_authenticated %}
+                    
+                    <a href="{% url 'showLogin' %}"><button >Login in to my account</button></a>
+                    
+                   
+                    <a href="{% url 'signup' %}"><button style="width: 120px;background-color: #07a44b;color: white;border: 2px solid #07a44b;">Signup</button></a>
+                        
+
+                    {% else %}
+                    <!-- <a href="{% url 'saved' %}"><button style="width: 45px;height:45px;border: 2px solid rgb(230, 230, 230);font-size:16px" class="icon"><ion-icon name="bookmark"></ion-icon></button></a> -->
+
+                    <a href="{% url 'createPost' %}" style="color: black;opacity: 1;"><button style="border: 2px solid rgb(230, 230, 230);width: 150px;opacity: 1;" class="icon">Create Post</button></a>
+                    <!-- <a href="{% url 'logout' %}"><button style="width: 45px;height:45px;border: 2px solid rgb(230, 230, 230);font-size:16px" class="icon"><ion-icon name="log-out"></ion-icon></button></a> -->
+                    
+                    <div class="profile" style="padding:5px;" >
+                        <input type="hidden" value="0" class="open1">
+                        <a href="{% url 'profileView' pk=profile.user.pk %}"><img src="{{profile.image.url}}" alt="" ></a>
+                        
+                        
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+        {% if request.session.login_error == 1 %}
+        <div class="error-invalid" style="width: 100%;height: fit-content;padding: 10px 0px 10px 0px;background-color: rgb(148, 36, 36);display: flex;align-items: center;">
+            <p style="display: flex;justify-content: center;align-items: center;width: 100%;opacity: 1;text-align: center;line-height: 32px;margin-bottom: 0px;color: rgb(255, 255, 255);" class="error">Invalid login credentials. Please check if you spelled your email and password correctly</p>
+            <h3 style="position: absolute;right: 10px;color: white;cursor: pointer;" onclick="closeError()"><ion-icon name="close"></ion-icon></h3>   
+        </div>    
+        {% endif %}
+        
+
+        
+        <div class="navbar-mobile">
+            <div>
+                <input type="hidden" name="" id="" value="0" class="menuOpen">
+                <h3 class="mbtn" onclick="showMenu()"><ion-icon name="menu-outline"></ion-icon></h3>
+                <a href="{% url 'homepage' %}"><img src="{% static 'images/logo2.png' %}" alt=""></a>
+
+            </div>
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'profileView' pk=request.user.pk %}"><img src="{{profile.image.url}}" alt="" class="profile-mobile"></a>
+            {% endif %}
+        </div>
+        <div class="menu-wrap">
+
+        
+            <div class="menu">
+                <a href="{% url 'homepage' %}"><ion-icon name="home" style="color: #07a44b;"></ion-icon> Home</a>
+                <a href="{% url 'gigs' %}"><ion-icon name="document-text" style="color: #07a44b;"></ion-icon> Posts</a>
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'saved' %}"><ion-icon name="bookmark" style="color: #07a44b;"></ion-icon> Saved</a>
+                <a href="{% url 'logout' %}"><ion-icon name="log-out" style="color: #07a44b;"></ion-icon> Logout</a>
+                {% else %}
+                <a href="{% url 'showLogin' %}"><ion-icon name="log-in" style="color: #07a44b;"></ion-icon> Login</a>
+                <a href="{% url 'signup' %}"><ion-icon name="person-add" style="color: #07a44b;"></ion-icon> Signup</a>
+
+                {% endif %}
+            </div>
+
+        </div>
+        <img src="{% static 'images/pright.png' %}" alt="" style="position: absolute;right: 0;bottom: -80px;width: 250px;opacity: 0.05;">
+        <img src="{% static 'images/pleft.png' %}" alt="" style="position: absolute;left: 0;top: 0px;width: 250px;opacity: 0.05;">
+
+        <center>
+       <div class="login-wrapper">
+
+       
+        <center>
+        <form class="box login" enctype="multipart/form-data" method="post" style="z-index: 10;padding-top: 0px;background-color: white;padding-right: 10px;" action="{% url 'login' %}">
+            <!-- <h5 onclick="closeLogin()"><ion-icon name="close-outline"></ion-icon></h5> -->
+            {% csrf_token %}
+            <h2>Login</h2>
+            <p>Login in to your account now</p>
+            <div class="field-inp">
+                <h4 style="text-align: left;">Email *</h4>
+                <input type="email" name="email" id="" placeholder="Email address" required class="email">
+            </div>
+            <div class="field-inp">
+                <h4 style="text-align: left;">Password *</h4>
+                <input type="password" name="password" id="" placeholder="Password goes here" required class="password">
+
+            </div>
+            <!-- <div class="fields" style="text-align: center;"> -->
+                <center><a href="{% url 'signup' %}" style="text-decoration: none;color: black;margin-bottom: 25px;font-weight: 600;margin-top: -10px;">Dont have an account?</a></center>
+                <!-- <a>Forgot password</a> -->
+            <!-- </div> -->
+            {% if request.session.login_error == 1 %}
+            <!-- <p style="display: flex;justify-content: center;align-items: center;width: 100%;margin-top: -5px;opacity: 1;margin-bottom: 10px;width: 80%;text-align: center;line-height: 32px;margin-bottom: 20px;color: rgb(178, 47, 47);" class="error">Invalid login credentials. Please check if you spelled your email and password correctly</p> -->
+            {% endif %}
+            <center><button type="submit" class="submitbtn" style="margin-top: 15px;">Login</button></center>
+        </form>
+        </center>
+    </div>
+        </center>
+        
+       
+        
+        <footer style="position: relative;margin-top: 190px;">
+            <div class="left-side">
+                <h3>ProLink@gmail.com</h3>
+                
+            </div>
+
+            <div class="right-side">
+                <h3>Follow us</h3>
+                <h4><i class="fa-brands fa-facebook-f"></i></h4>
+                <h4><i class="fa-brands fa-twitter"></i></h4>
+                <h4><i class="fa-brands fa-instagram"></i></h4>
+        </footer>
+
+    </div>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+    <script>
+    $(document).ready(function(){       
+   var scroll_start = 0;
+   var startchange = $('#startchange');
+   var offset = startchange.offset();
+    if (startchange.length){
+        $(document).scroll(function() { 
+                    scroll_start = $(this).scrollTop();
+                    if(scroll_start > offset.top) {
+                        $(".navbar-wrapper").css('background-color', '#fff');
+                    } else {
+                        $('.navbar-wrapper').css('background-color', 'transparent');
+                    }
+                });
+                    }
+                });
+
+        function sendData(){
+            
+            var data = new FormData()
+
+
+            if(document.querySelector('.email').value == '' || document.querySelector('.password').value == ''){
+                alert('please fill the fields')
+            }
+
+            else{
+    
+            data.append("email", document.querySelector('.email').value)
+            data.append("password", document.querySelector('.password').value)
+    
+            
+    
+            data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+            
+            $.ajax({
+    
+                method:"POST",
+                url:'/checkLogin/',
+                processData:false,
+                contentType:false,
+                // MimeType:"multipart/form-data",
+                data:data,
+                success:function(res){
+                    localStorage.setItem("message",res.message)
+    
+                    if(res.message === 0){
+                        
+                        login(data)
+                        localStorage.setItem("email",document.querySelector('.email').value)
+                        localStorage.setItem('password',document.querySelector('.password').value)
+                        // location.reload();
+                        
+                    }
+                    else{
+                        document.querySelector('.error').style.display = "flex"
+                        
+                    }
+                    
+    
+                }
+            })
+
+        }
+        }
+    
+        function login(data){
+    
+    
+            $.ajax({
+    
+                method:"POST",
+                url:'/login/',
+                processData:false,
+                contentType:false,
+                MimeType:"multipart/form-data",
+                data:data,
+                success:function(res){
+                    console.log("it worked :)")
+                    
+                    history.back()
+                    setTimeout(()=>{
+                        location.reload();
+                    },1000)
+                }
+                })
+        }
+
+        function closeError(){
+            var data = new FormData()
+            data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+
+            $.ajax({
+                
+            method:"POST",
+            url:'/error/',
+            processData:false,
+            contentType:false,
+            MimeType:"multipart/form-data",
+            data:data,
+            success:function(res){
+                console.log("it worked :)")
+                
+                    document.querySelector('.error-invalid').style.display = "none"
+                
+                    }
+                    })
+        }
+
+        function check(){
+            var inputs = document.querySelectorAll('.inp')
+            
+            var error = 0;
+            for(var i = 0;i<inputs.length;i++){
+                if(inputs[i].value == '' ){
+                    // inputs[i].style.border = "1px solid rgb(226, 226, 226)"
+                    console.log("false");
+                    error = 1
+                    
+                    break
+                }
+                else{
+                    
+                    error = 0
+                }
+
+                
+
+                
+
+            }
+            
+
+            
+            var data = new FormData()
+
+            data.append("username", document.querySelector('.username').value)
+            data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+            $.ajax({
+
+                method:"POST",
+                url:'/checkUsername/',
+                processData:false,
+                contentType:false,
+                MimeType:"multipart/form-data",
+                data:data,
+                success:function(res){
+
+                    
+                    if(res.result == "1"){
+                        document.querySelector('.error3').style.display = "flex"
+                        error = 1
+                        document.querySelector('.check').value = ""
+                        document.querySelector('.next').style.opacity = "0.5"
+                        document.querySelector('.next').style.pointerEvents = "none"
+                        
+                    }
+                    else{
+                        document.querySelector('.error3').style.display = "none"
+                        document.querySelector('.check').value = "1"
+                        error = 0
+                    }
+
+                }
+                })
+        
+
+            
+
+            if(error == 0){
+                document.querySelector('.next').style.opacity = "1"
+                document.querySelector('.next').style.pointerEvents = "all"
+            }
+            
+        }
+
+        function check2(){
+            var inputs = document.querySelectorAll('.inp1')
+            
+            var error = 0;
+            for(var i = 0;i<inputs.length;i++){
+                if(inputs[i].value == ''){
+                    // inputs[i].style.border = "1px solid rgb(226, 226, 226)"
+                    console.log("false");
+                    error = 1
+                    break
+                }
+                else{
+                    
+                    error = 0
+                }
+
+                
+
+            }
+            if(error == 0){
+                document.querySelector('.finish').style.opacity = "1"
+                document.querySelector('.finish').style.pointerEvents = "all"
+            }
+        }
+
+        function check3(){
+            var inputs = document.querySelectorAll('.inp3')
+            
+            var error = 0;
+            for(var i = 0;i<inputs.length;i++){
+                if(inputs[i].value == ''){
+                    // inputs[i].style.border = "1px solid rgb(226, 226, 226)"
+                    console.log("false");
+                    error = 1
+                    break
+                }
+                else{
+                    
+                    error = 0
+                }
+
+                
+
+            }
+            if(error == 0){
+                document.querySelector('.next1').style.opacity = "1"
+                document.querySelector('.next1').style.pointerEvents = "all"
+            }
+        }
+
+        function check4(){
+            var inputs = document.querySelectorAll('.inp4')
+            
+            var error = 0;
+            for(var i = 0;i<inputs.length;i++){
+                if(inputs[i].value == ''){
+                    // inputs[i].style.border = "1px solid rgb(226, 226, 226)"
+                    console.log("false");
+                    error = 1
+                    break
+                }
+                else{
+                    
+                    error = 0
+                }
+
+                
+
+            }
+            if(error == 0){
+                document.querySelector('.finish1').style.opacity = "1"
+                document.querySelector('.finish1').style.pointerEvents = "all"
+            }
+        }
+
+        function save(pk,element){
+            var data = new FormData()
+
+            data.append("pk", pk)
+            // data.append("password", document.querySelector('.password').value)
+            console.log(pk);
+            data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+
+            $.ajax({
+
+          method:"POST",
+          url:'/save/',
+          processData:false,
+          contentType:false,
+          MimeType:"multipart/form-data",
+          data:data,
+          success:function(res){
+            console.log(document.querySelector('.post'+pk).value);
+            if(document.querySelector('.post'+pk).value == "0"){
+                
+                element.innerHTML = '<ion-icon name="bookmark"></ion-icon> Saved'
+                document.querySelector('.post'+pk).value = "1"
+            }
+            else{
+                element.innerHTML = '<ion-icon name="bookmark-outline"></ion-icon> Save'
+                document.querySelector('.post'+pk).value = "0"
+            }
+          }
+          })
+
+        }
+
+        function open1(){
+
+            if(document.querySelector('.open1').value == "0"){
+                document.querySelector('.profile-options').style.display = 'flex'
+                document.querySelector('.open1').value = "1"
+            }
+
+            else{
+                document.querySelector('.profile-options').style.display = 'none'
+                document.querySelector('.open1').value = "0"
+            }
+        }
+
+        function showMsg(){
+            document.querySelector('.message').style.display = "block"
+
+        }
+
+        function closeMsg(){
+            document.querySelector('.message').style.display = "none"
+        }
+
+        function sendMsg(){
+
+if(document.querySelector('.text-msg').value !=""){
+var data = new FormData();
+
+data.append("message", document.querySelector('.text-msg').value)
+data.append("from_user", document.querySelector('.from_user').value)
+data.append("to_user", document.querySelector('.to_user').value)  
+
+data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+
+
+$.ajax({
+
+    method:"POST",
+    url:'/sendMsg1/',
+    processData:false,
+    contentType:false,
+    MimeType:"multipart/form-data",
+    data:data,
+    success:function(res){
+        
+        var chat = document.createElement('div')
+        chat.classList.add('right-chat')
+
+        var h4 = document.createElement('h4')
+        h4.innerText = document.querySelector('.text-msg').value
+        chat.append(h4)
+
+        var messages = document.querySelector('.messages')
+
+        messages.appendChild(chat)
+        document.querySelector('.text-msg').value = "";
+        
+            $('.messages').scrollBottom($(".messages").height());
+            
+    }
+    })
+
+}
+}
+
+$('.text-msg').keydown(function(event) {
+
+var data = new FormData();
+
+if(document.querySelector('.text-msg').value !=""){
+
+data.append("message", document.querySelector('.text-msg').value)
+data.append("from_user", document.querySelector('.from_user').value)
+data.append("to_user", document.querySelector('.to_user').value)
+
+data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+
+if (event.keyCode == 13) {
+    $.ajax({
+    
+    method:"POST",
+    url:'/sendMsg1/',
+    processData:false,
+    contentType:false,
+    MimeType:"multipart/form-data",
+    data:data,
+    success:function(res){
+
+
+        
+        var chat = document.createElement('div')
+        chat.classList.add('right-chat')
+
+        var h4 = document.createElement('h4')
+        h4.innerText = document.querySelector('.text-msg').value
+        chat.append(h4)
+
+        var messages = document.querySelector('.messages')
+        
+        messages.appendChild(chat)
+        document.querySelector('.text-msg').value = "";
+        $('.messages').scrollBottom($(".messages").height());
+        
+    }
+    })
+return false;
+}
+}
+});
+
+    function showMessages(element){
+        document.querySelector('.wrap-chats').style.display = "none"
+        document.querySelector('.wrap-msg').style.display = "block"
+
+        var data = new FormData();
+
+        
+        // data.append("message", document.querySelector('.text-msg').value)
+        data.append("from_user", element.querySelector('.from_user1').value)
+        data.append("to_user", element.querySelector('.to_user1').value)
+        // console.log(document.querySelector('.to_user').value);  
+        document.querySelector('.to_user').value = document.querySelector('.to_user1').value
+        document.querySelector('.global_to').value = document.querySelector('.to_user1').value
+        data.append("csrfmiddlewaretoken",'{{ csrf_token }}')
+
+        var msgs = document.querySelectorAll('.left-chat')
+
+        for(var i =0;i<msgs.length;i++){
+            msgs[i].remove()
+        }
+
+        var msgs2 = document.querySelectorAll('.right-chat')
+
+        for(var i =0;i<msgs2.length;i++){
+            msgs2[i].remove()
+        }
+
+        $.ajax({
+
+            method:"POST",
+            url:'/showMessages/',
+            processData:false,
+            contentType:false,
+            MimeType:"multipart/form-data",
+            data:data,
+            success:function(res){
+                document.querySelector('.chat-pic').src = res.image
+                document.querySelector('.avg').src = res.avg
+                document.querySelector('.cht-username').innerText = element.querySelector('.to_user1').value
+                console.log(res.message[0].message);
+                document.querySelector('.to_user').value =  element.querySelector('.to_user1').value
+                for(var i =0 ;i<res.message.length;i++){
+                    if(res.message[i].from_user == element.querySelector('.from_user1').value){
+                    var chat = document.createElement('div')
+                    chat.classList.add('right-chat')
+
+                    var h4 = document.createElement('h4')
+                    h4.innerText = res.message[i].message
+                    chat.append(h4)
+
+                    var messages = document.querySelector('.messages')
+
+                    messages.appendChild(chat)
+                    // document.querySelector('.text-msg').value = "";
+                    }
+
+                    else{
+
+                        var chat = document.createElement('div')
+                        chat.classList.add('left-chat')
+
+                        var h4 = document.createElement('h4')
+                        h4.innerText = res.message[i].message
+                        chat.append(h4)
+
+                        var messages = document.querySelector('.messages')
+
+                        messages.appendChild(chat)
+                        // document.querySelector('.text-msg').value = "";
+
+                    }
+
+                }
+            }
+            })
+
+
+    }
+    
+
+    function back(){
+        document.querySelector('.wrap-msg').style.display = "none";
+        document.querySelector('.wrap-chats').style.display = "block";
+    }
+
+    function showHow(){
+        const element = document.querySelector(".how");
+        element.scrollIntoView();   
+    }
+
+    </script>
+
+</body>
+</html>
